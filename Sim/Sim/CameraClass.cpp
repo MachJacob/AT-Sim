@@ -65,9 +65,9 @@ void CameraClass::Render()
 	position.z = m_positionZ;
 	positionVector = XMLoadFloat3(&position);
 
-	lookAt.x = 0.0f;
+	lookAt.x = 1.0f;
 	lookAt.y = 0.0f;
-	lookAt.z = 1.0f;
+	lookAt.z = 0.0f;
 	lookAtVector = XMLoadFloat3(&lookAt);
 
 	pitch = m_rotationX * 0.0174532925f;

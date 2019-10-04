@@ -42,7 +42,8 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_camera->SetPosition(0.0f, 0.0f, -5.0f);
+	m_camera->SetPosition(-5.0f, 0.0f, -15.0f);
+	//m_camera->SetRotation(45.0f, 0.0f, 0.0f);
 
 	m_model = new ModelClass;
 	if (!m_model)

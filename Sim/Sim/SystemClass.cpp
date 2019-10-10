@@ -112,6 +112,39 @@ bool SystemClass::Frame()
 		return false;
 	}
 
+	if (m_input->IsKeyDown(VK_RIGHT))
+	{
+		CameraClass* cam = m_graphics->GetCamera();
+		cam->SetPosition(cam->GetPosition().x + 1, cam->GetPosition().y, cam->GetPosition().z);
+	}
+
+	if (m_input->IsKeyDown(VK_LEFT))
+	{
+		CameraClass* cam = m_graphics->GetCamera();
+		cam->SetPosition(cam->GetPosition().x - 1, cam->GetPosition().y, cam->GetPosition().z);
+	}	
+	if (m_input->IsKeyDown(VK_UP))
+	{
+		CameraClass* cam = m_graphics->GetCamera();
+		cam->SetPosition(cam->GetPosition().x, cam->GetPosition().y, cam->GetPosition().z + 1);
+	}
+
+	if (m_input->IsKeyDown(VK_DOWN))
+	{
+		CameraClass* cam = m_graphics->GetCamera();
+		cam->SetPosition(cam->GetPosition().x, cam->GetPosition().y, cam->GetPosition().z - 1);
+	}
+	if (m_input->IsKeyDown(VK_NUMPAD8))
+	{
+		CameraClass* cam = m_graphics->GetCamera();
+		cam->SetPosition(cam->GetPosition().x, cam->GetPosition().y + 1, cam->GetPosition().z);
+	}
+	if (m_input->IsKeyDown(VK_NUMPAD2))
+	{
+		CameraClass* cam = m_graphics->GetCamera();
+		cam->SetPosition(cam->GetPosition().x, cam->GetPosition().y - 1, cam->GetPosition().z);
+	}
+
 	result = m_graphics->Frame();
 	if (!result)
 	{

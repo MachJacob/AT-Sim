@@ -42,7 +42,7 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_camera->SetPosition(-5.0f, 0.0f, -15.0f);
+	m_camera->SetPosition(-5.0f, 5.0f, -15.0f);
 	//m_camera->SetRotation(45.0f, 0.0f, 0.0f);
 
 	m_model = new ModelClass;
@@ -143,4 +143,9 @@ bool GraphicsClass::Render()
 	m_Direct3D->EndScene();
 
 	return true;
+}
+
+CameraClass* GraphicsClass::GetCamera()
+{
+	return m_camera;
 }

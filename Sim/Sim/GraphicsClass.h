@@ -23,6 +23,7 @@ public:
 	void Shutdown();
 	bool Frame();
 
+	void SetCamera(CameraClass*);
 	CameraClass* GetCamera();
 
 private:

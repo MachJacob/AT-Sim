@@ -36,15 +36,6 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_camera = new CameraClass;
-	if (!m_camera)
-	{
-		return false;
-	}
-
-	m_camera->SetPosition(-5.0f, 5.0f, -15.0f);
-	//m_camera->SetRotation(45.0f, 0.0f, 0.0f);
-
 	m_model = new ModelClass;
 	if (!m_model)
 	{
@@ -148,4 +139,9 @@ bool GraphicsClass::Render()
 CameraClass* GraphicsClass::GetCamera()
 {
 	return m_camera;
+}
+
+void GraphicsClass::SetCamera(CameraClass* _cam)
+{
+	m_camera = _cam;
 }

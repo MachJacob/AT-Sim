@@ -75,10 +75,31 @@ void CameraClass::Render()
 	roll = m_rotationZ * 0.0174532925f;
 	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
+	XMMATRIX RotateY;
+	RotateY = XMMatrixRotationY(yaw);
+	camRight = XMVector3TransformCoord(DefaultRight, RotateY);
+	camForward = XMVector3TransformCoord(DefaultForward, RotateY);
+	
+	positionVector = XMVectorAdd(positionVector, moveBackForward * camForward);
+	positionVector = XMVectorAdd(positionVector, moveLeftRight * camRight);
+	XMFLOAT3 vFor;
+	XMStoreFloat3(&vFor, camForward);
+	XMFLOAT3 vRig;
+	XMStoreFloat3(&vRig, camRight);
+
+	m_positionX += (vFor.x * moveBackForward) + (vRig.x * moveLeftRight);
+	m_positionY += (vFor.y * moveBackForward) + (vRig.y * moveLeftRight);
+	m_positionZ += (vFor.z * moveBackForward) + (vRig.z * moveLeftRight);
+
 	lookAtVector = XMVector3TransformCoord(lookAtVector, rotationMatrix);
 	upVector = XMVector3TransformCoord(upVector, rotationMatrix);
 
+	lookAtVector = XMVectorAdd(positionVector, lookAtVector);
+
 	m_viewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
+
+	moveBackForward = 0;
+	moveLeftRight = 0;
 
 	return;
 }
@@ -87,4 +108,14 @@ void CameraClass::GetViewMatrix(XMMATRIX& viewMatrix)
 {
 	viewMatrix = m_viewMatrix;
 	return;
+}
+
+void CameraClass::SetForwardSpeed(float _speed)
+{
+	moveBackForward += _speed;
+}
+
+void CameraClass::SetRightSpeed(float _speed)
+{
+	moveLeftRight += _speed;
 }

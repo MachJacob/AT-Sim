@@ -40,6 +40,17 @@ bool SystemClass::Initialise()
 
 	result = m_graphics->Initialise(screenWidth, screenHeight, m_hwnd);
 
+	m_camera = new CameraClass();
+	if (!m_camera)
+	{
+		return false;
+	}
+
+	m_graphics->SetCamera(m_camera);
+
+	m_camera->SetPosition(-5.0f, 0.0f, 0.0f);
+	m_camera->SetRotation(0.0f, 0.0f, 0.0f);
+
 	/*if (!result)
 	{
 		return false;
@@ -112,37 +123,47 @@ bool SystemClass::Frame()
 		return false;
 	}
 
-	if (m_input->IsKeyDown(VK_RIGHT))
+	if (m_input->IsKeyDown(68)) //d
 	{
-		CameraClass* cam = m_graphics->GetCamera();
-		cam->SetPosition(cam->GetPosition().x + 1, cam->GetPosition().y, cam->GetPosition().z);
+		m_camera->SetRightSpeed(1);
 	}
 
+	if (m_input->IsKeyDown(65)) //a
+	{
+		m_camera->SetRightSpeed(-1);
+	}	
+	if (m_input->IsKeyDown(87)) //w
+	{
+		m_camera->SetForwardSpeed(1);
+	}
+
+	if (m_input->IsKeyDown(83)) //s
+	{
+		m_camera->SetForwardSpeed(-1);
+	}
+	if (m_input->IsKeyDown(69)) //e
+	{
+		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y + 1, m_camera->GetPosition().z);
+	}
+	if (m_input->IsKeyDown(81)) //q
+	{
+		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y - 1, m_camera->GetPosition().z);
+	}
 	if (m_input->IsKeyDown(VK_LEFT))
 	{
-		CameraClass* cam = m_graphics->GetCamera();
-		cam->SetPosition(cam->GetPosition().x - 1, cam->GetPosition().y, cam->GetPosition().z);
-	}	
+		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y - 1, m_camera->GetRotation().z );
+	}
+	if (m_input->IsKeyDown(VK_RIGHT))
+	{
+		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y + 1, m_camera->GetRotation().z);
+	}
 	if (m_input->IsKeyDown(VK_UP))
 	{
-		CameraClass* cam = m_graphics->GetCamera();
-		cam->SetPosition(cam->GetPosition().x, cam->GetPosition().y, cam->GetPosition().z + 1);
+		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z + 1);
 	}
-
 	if (m_input->IsKeyDown(VK_DOWN))
 	{
-		CameraClass* cam = m_graphics->GetCamera();
-		cam->SetPosition(cam->GetPosition().x, cam->GetPosition().y, cam->GetPosition().z - 1);
-	}
-	if (m_input->IsKeyDown(VK_NUMPAD8))
-	{
-		CameraClass* cam = m_graphics->GetCamera();
-		cam->SetPosition(cam->GetPosition().x, cam->GetPosition().y + 1, cam->GetPosition().z);
-	}
-	if (m_input->IsKeyDown(VK_NUMPAD2))
-	{
-		CameraClass* cam = m_graphics->GetCamera();
-		cam->SetPosition(cam->GetPosition().x, cam->GetPosition().y - 1, cam->GetPosition().z);
+		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z - 1);
 	}
 
 	result = m_graphics->Frame();

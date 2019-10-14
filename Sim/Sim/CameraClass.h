@@ -19,6 +19,9 @@ public:
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetRotation();
 
+	void SetForwardSpeed(float);
+	void SetRightSpeed(float);
+
 	void Render();
 	void GetViewMatrix(XMMATRIX&);
 
@@ -26,6 +29,13 @@ private:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationX, m_rotationY, m_rotationZ;
 	XMMATRIX m_viewMatrix;
+
+	XMVECTOR DefaultForward = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR DefaultRight = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
+	XMVECTOR camForward = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR camRight = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
+	float moveLeftRight = 0.0f;
+	float moveBackForward = 0.0f;
 };
 
 #endif

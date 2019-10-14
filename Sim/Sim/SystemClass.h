@@ -33,6 +33,7 @@ private:
 
 	InputClass* m_input;
 	GraphicsClass* m_graphics;
+	CameraClass* m_camera;
 };
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

@@ -6,6 +6,7 @@
 #include "CameraClass.h"
 #include "ModelClass.h"
 #include "ColourShaderClass.h"
+#include "TextureShaderClass.h"
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -35,5 +36,6 @@ private:
 	CameraClass* m_camera;
 	ModelClass* m_model;
 	ColourShaderClass* m_colorShader;
+	TextureShaderClass* m_textureShader;
 };
 #endif // _GRAPHICSCLASS_H_

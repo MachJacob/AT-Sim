@@ -16,11 +16,17 @@ ModelClass::~ModelClass()
 {
 }
 
-bool ModelClass::Initialise(ID3D11Device* device)
+bool ModelClass::Initialise(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* textureFilename)
 {
 	bool result;
 
 	result = InitialiseBuffers(device);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = LoadTexture(device, deviceContext, textureFilename);
 	if (!result)
 	{
 		return false;
@@ -31,6 +37,7 @@ bool ModelClass::Initialise(ID3D11Device* device)
 
 void ModelClass::Shutdown()
 {
+	ReleaseTexture();
 	ShutdownBuffers();
 	return;
 }
@@ -44,6 +51,11 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 int ModelClass::GetIndexCount()
 {
 	return m_indexCount;
+}
+
+ID3D11ShaderResourceView* ModelClass::GetTexture()
+{
+	return m_Texture->GetTexture();
 }
 
 bool ModelClass::InitialiseBuffers(ID3D11Device* device)
@@ -71,112 +83,112 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 	}
 
 	vertices[0].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // Bottom left.			FRONT
-	vertices[0].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[1].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // Top left.
-	vertices[1].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[1].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[2].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // Bottom right.
-	vertices[2].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[3].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // top left				FRONT
-	vertices[3].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[3].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[4].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // Top right.
-	vertices[4].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[4].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[5].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // bottom right.
-	vertices[5].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f); 
+	vertices[5].texture = XMFLOAT2(1.0f, 1.0f);
 	
 	vertices[6].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // bottom left			LEFT
-	vertices[6].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[6].texture = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[7].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bottom left back
-	vertices[7].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[7].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[8].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // top left.
-	vertices[8].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[8].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[9].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // top left				LEFT
-	vertices[9].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[9].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[11].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // top left back
-	vertices[11].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[11].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[10].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bottom left back.
-	vertices[10].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[10].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[12].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // top left			TOP
-	vertices[12].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[12].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[13].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // top left back
-	vertices[13].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[13].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[14].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // top right.
-	vertices[14].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[14].texture = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[15].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // top left back			TOP
-	vertices[15].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[15].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[16].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back
-	vertices[16].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[16].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[17].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // top right.
-	vertices[17].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[17].texture = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[18].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // bot right 			RIGHT
-	vertices[18].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[18].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[19].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // top right 
-	vertices[19].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[19].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[20].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back
-	vertices[20].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[20].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[21].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // bot right 			RIGHT
-	vertices[21].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[21].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[22].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back
-	vertices[22].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[22].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[23].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // bot right back
-	vertices[23].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[23].texture = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[24].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back 			BACK
-	vertices[24].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+	vertices[24].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[25].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // top left back
-	vertices[25].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+	vertices[25].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[26].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bot left back
-	vertices[26].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+	vertices[26].texture = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[27].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bot left back 			BACK
-	vertices[27].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+	vertices[27].texture = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[28].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // bot right back
-	vertices[28].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+	vertices[28].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[29].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back
-	vertices[29].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+	vertices[29].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[30].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // bot left 			BOTTOM
-	vertices[30].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	vertices[30].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[31].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // bot right
-	vertices[31].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	vertices[31].texture = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[32].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // bot right back
-	vertices[32].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	vertices[32].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[33].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // bot left 			BOTTOM
-	vertices[33].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	vertices[33].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[34].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // bot right back
-	vertices[34].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	vertices[34].texture = XMFLOAT2(1.0f, 0.0f);
 
 	vertices[35].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bot left back
-	vertices[35].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	vertices[35].texture = XMFLOAT2(0.0f, 0.0f);
 
 	indices[0] = 0;
 	indices[1] = 1;
@@ -288,6 +300,37 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	return;
+}
+
+bool ModelClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename)
+{
+	bool result;
+
+	m_Texture = new TextureClass;
+	if (!m_Texture)
+	{
+		return false;
+	}
+
+	result = m_Texture->Initialise(device, deviceContext, filename);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void ModelClass::ReleaseTexture()
+{
+	if (m_Texture)
+	{
+		m_Texture->Shutdown();
+		delete m_Texture;
+		m_Texture = 0;
+	}
 
 	return;
 }

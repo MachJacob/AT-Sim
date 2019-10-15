@@ -7,6 +7,7 @@ GraphicsClass::GraphicsClass()
 	m_camera = 0;
 	m_model = 0;
 	m_colorShader = 0;
+	m_textureShader = 0;
 }
 
 
@@ -42,14 +43,28 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	result = m_model->Initialise(m_Direct3D->GetDevice());
+	char file[] = "../Sim/data/stone01.tga";
+	result = m_model->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
 		return false;
 	}
 
-	m_colorShader = new ColourShaderClass;
+	m_textureShader = new TextureShaderClass;
+	if (!m_textureShader)
+	{
+		return false;
+	}
+
+	result = m_textureShader->Initialise(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialise texture shader object", L"Error", MB_OK);
+		return false;
+	}
+
+	/*m_colorShader = new ColourShaderClass;
 	if (!m_colorShader)
 	{
 		return false;
@@ -59,7 +74,7 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 	if (!result)
 	{
 		return false;
-	}
+	}*/
 
 	return true;
 }
@@ -67,12 +82,18 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
-	if (m_colorShader)
+	if (m_textureShader)
+	{
+		m_textureShader->Shutdown();
+		delete m_textureShader;
+		m_textureShader = 0;
+	}
+	/*if (m_colorShader)
 	{
 		m_colorShader->Shutdown();
 		delete m_colorShader;
 		m_colorShader = 0;
-	}
+	}*/
 
 	if (m_model)
 	{
@@ -125,11 +146,17 @@ bool GraphicsClass::Render()
 
 	m_model->Render(m_Direct3D->GetDeviceContext());
 
-	result = m_colorShader->Renderer(m_Direct3D->GetDeviceContext(), m_model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), m_model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_model->GetTexture());
 	if (!result)
 	{
 		return false;
 	}
+
+	/*result = m_colorShader->Renderer(m_Direct3D->GetDeviceContext(), m_model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+	{
+		return false;
+	}*/
 
 	m_Direct3D->EndScene();
 

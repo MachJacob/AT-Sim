@@ -27,6 +27,10 @@ public:
 
 	int GetIndexCount();
 
+	void SetPosition(float, float, float);
+
+	XMFLOAT3 GetPosition();
+
 	ID3D11ShaderResourceView* GetTexture();
 
 private:
@@ -42,6 +46,10 @@ private:
 	int m_vertexCount, m_indexCount;
 
 	TextureClass* m_Texture;
+
+	float xPos;
+	float yPos;
+	float zPos;
 };
 
 #endif // !_MODELCLASS_H_

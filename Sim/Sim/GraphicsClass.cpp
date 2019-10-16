@@ -43,8 +43,24 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	m_model->SetPosition(0, 0, 0);
+	
+	m_model2 = new ModelClass;
+	if (!m_model)
+	{
+		return false;
+	}
+
+	m_model2->SetPosition(-2, -5, 0);
+
 	char file[] = "../Sim/data/stone01.tga";
 	result = m_model->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
+		return false;
+	}
+	result = m_model2->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
@@ -102,6 +118,13 @@ void GraphicsClass::Shutdown()
 		m_model = 0;
 	}
 
+	if (m_model2)
+	{
+		m_model2->Shutdown();
+		delete m_model2;
+		m_model2 = 0;
+	}
+
 	if (m_camera)
 	{
 		delete m_camera;
@@ -146,7 +169,14 @@ bool GraphicsClass::Render()
 
 	m_model->Render(m_Direct3D->GetDeviceContext());
 
-	result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), m_model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_model->GetTexture());
+	result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), m_model->GetIndexCount() + m_model2->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_model->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+	m_model2->Render(m_Direct3D->GetDeviceContext());
+	
+	result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), m_model2->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_model2->GetTexture());
 	if (!result)
 	{
 		return false;

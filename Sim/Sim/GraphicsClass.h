@@ -35,6 +35,7 @@ private:
 	D3DClass* m_Direct3D;
 	CameraClass* m_camera;
 	ModelClass* m_model;
+	ModelClass* m_model2;
 	ColourShaderClass* m_colorShader;
 	TextureShaderClass* m_textureShader;
 };

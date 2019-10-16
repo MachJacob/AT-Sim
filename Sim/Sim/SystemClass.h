@@ -22,7 +22,7 @@ public:
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
-	bool Frame();
+	bool Frame(float);
 	void InitialiseWindows(int&, int&);
 	void ShutDownWindows();
 
@@ -34,6 +34,8 @@ private:
 	InputClass* m_input;
 	GraphicsClass* m_graphics;
 	CameraClass* m_camera;
+
+	float m_previousTime = 0;
 };
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

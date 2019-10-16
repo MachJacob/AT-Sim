@@ -1,4 +1,6 @@
 #include "SystemClass.h"
+#include <time.h>
+#include<timeapi.h>
 
 SystemClass::SystemClass()
 {
@@ -103,7 +105,11 @@ void SystemClass::Run()
 		}
 		else
 		{
-			result = Frame();
+			float current_time = (float)timeGetTime();
+			float m_delta = (current_time - m_previousTime) * 0.001f;;
+			m_previousTime = current_time;
+
+			result = Frame(m_delta);
 			if (!result)
 			{
 				done = true;
@@ -113,7 +119,7 @@ void SystemClass::Run()
 	return;
 }
 
-bool SystemClass::Frame()
+bool SystemClass::Frame(float dt)
 {
 	bool result;
 
@@ -125,21 +131,21 @@ bool SystemClass::Frame()
 
 	if (m_input->IsKeyDown(68)) //d
 	{
-		m_camera->SetRightSpeed(1);
+		m_camera->SetRightSpeed(120 * dt);
 	}
 
 	if (m_input->IsKeyDown(65)) //a
 	{
-		m_camera->SetRightSpeed(-1);
+		m_camera->SetRightSpeed(-60 * dt);
 	}	
 	if (m_input->IsKeyDown(87)) //w
 	{
-		m_camera->SetForwardSpeed(1);
+		m_camera->SetForwardSpeed(60 * dt);
 	}
 
 	if (m_input->IsKeyDown(83)) //s
 	{
-		m_camera->SetForwardSpeed(-1);
+		m_camera->SetForwardSpeed(-60 * dt);
 	}
 	if (m_input->IsKeyDown(69)) //e
 	{

@@ -37,34 +37,25 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_model = new ModelClass;
-	if (!m_model)
-	{
-		return false;
-	}
-
-	m_model->SetPosition(0, 0, 0);
-	
-	m_model2 = new ModelClass;
-	if (!m_model)
-	{
-		return false;
-	}
-
-	m_model2->SetPosition(-2, -5, 0);
 
 	char file[] = "../Sim/data/stone01.tga";
-	result = m_model->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
-	if (!result)
+	for (int i = 0; i < 10; i++)
 	{
-		MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
-		return false;
-	}
-	result = m_model2->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
-		return false;
+		for (int j = 0; j < 10; j++)
+		{
+
+
+			models.push_back(std::make_unique<ModelClass>());
+
+			models[i*10 + j]->SetPosition(i * 5, 0, j * 5);
+
+			result = models[i*10 + j]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
+			if (!result)
+			{
+				MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
+				return false;
+			}
+		}
 	}
 
 	m_textureShader = new TextureShaderClass;
@@ -118,6 +109,11 @@ void GraphicsClass::Shutdown()
 		m_model = 0;
 	}
 
+	for (int i = 0; i < models.size(); i++)
+	{
+		models[i]->Shutdown();
+	}
+
 	if (m_model2)
 	{
 		m_model2->Shutdown();
@@ -167,20 +163,17 @@ bool GraphicsClass::Render()
 	m_camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjetionMatrix(projectionMatrix);
 
-	m_model->Render(m_Direct3D->GetDeviceContext());
+	for (int i = 0; i < models.size(); i++)
+	{
+		models[i]->Render(m_Direct3D->GetDeviceContext());
 
-	result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), m_model->GetIndexCount() + m_model2->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_model->GetTexture());
-	if (!result)
-	{
-		return false;
+		result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), models[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, models[i]->GetTexture());
+		if (!result)
+		{
+			return false;
+		}
 	}
-	m_model2->Render(m_Direct3D->GetDeviceContext());
 	
-	result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), m_model2->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_model2->GetTexture());
-	if (!result)
-	{
-		return false;
-	}
 
 	/*result = m_colorShader->Renderer(m_Direct3D->GetDeviceContext(), m_model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 	if (!result)

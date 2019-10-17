@@ -7,6 +7,7 @@
 #include "ModelClass.h"
 #include "ColourShaderClass.h"
 #include "TextureShaderClass.h"
+#include <vector>
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -38,5 +39,7 @@ private:
 	ModelClass* m_model2;
 	ColourShaderClass* m_colorShader;
 	TextureShaderClass* m_textureShader;
+
+	std::vector<std::unique_ptr<ModelClass>> models;
 };
 #endif // _GRAPHICSCLASS_H_

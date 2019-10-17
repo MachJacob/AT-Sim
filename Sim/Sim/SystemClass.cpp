@@ -53,12 +53,11 @@ bool SystemClass::Initialise()
 	m_camera->SetPosition(-5.0f, 0.0f, 0.0f);
 	m_camera->SetRotation(0.0f, 0.0f, 0.0f);
 
-	/*if (!result)
+	if (!result)
 	{
 		return false;
 	}
-	return true;*/
-	return result;
+	return true;
 }
 
 void SystemClass::Shutdown()
@@ -171,12 +170,13 @@ bool SystemClass::Frame(float dt)
 	{
 		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z - 1);
 	}
-
+	
 	result = m_graphics->Frame();
 	if (!result)
-	{
-		return false;
-	}
+		{
+			return false;
+		}
+	
 	return true;
 }
 

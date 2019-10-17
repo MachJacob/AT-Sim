@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include "inputclass.h"
 #include "graphicsclass.h"
+#include <vector>
 
 class SystemClass
 {

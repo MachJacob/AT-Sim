@@ -43,17 +43,18 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 	{
 		for (int j = 0; j < 10; j++)
 		{
-
-
-			models.push_back(std::make_unique<ModelClass>());
-
-			models[i*10 + j]->SetPosition(i * 5, 0, j * 5);
-
-			result = models[i*10 + j]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
-			if (!result)
+			for (int k = 0; k < 10; k++)
 			{
-				MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
-				return false;
+				models.push_back(std::make_unique<ModelClass>());
+
+				models[i * 100 + j * 10 + k]->SetPosition(i * 5, k * 5, j * 5);
+
+				result = models[i * 100 + j * 10 + k]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
+				if (!result)
+				{
+					MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
+					return false;
+				}
 			}
 		}
 	}

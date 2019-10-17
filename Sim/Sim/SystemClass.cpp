@@ -130,7 +130,7 @@ bool SystemClass::Frame(float dt)
 
 	if (m_input->IsKeyDown(68)) //d
 	{
-		m_camera->SetRightSpeed(120 * dt);
+		m_camera->SetRightSpeed(60 * dt);
 	}
 
 	if (m_input->IsKeyDown(65)) //a

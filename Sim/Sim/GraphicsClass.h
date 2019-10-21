@@ -7,6 +7,8 @@
 #include "ModelClass.h"
 #include "ColourShaderClass.h"
 #include "TextureShaderClass.h"
+#include "LightShaderClass.h"
+#include "LightClass.h"
 #include <vector>
 
 const bool FULL_SCREEN = false;
@@ -30,7 +32,7 @@ public:
 
 private:
 
-	bool Render();
+	bool Render(float);
 
 private:
 	D3DClass* m_Direct3D;
@@ -39,6 +41,9 @@ private:
 	ModelClass* m_model2;
 	ColourShaderClass* m_colorShader;
 	TextureShaderClass* m_textureShader;
+
+	LightShaderClass* m_lightShader;
+	LightClass* m_light;
 
 	std::vector<std::unique_ptr<ModelClass>> models;
 };

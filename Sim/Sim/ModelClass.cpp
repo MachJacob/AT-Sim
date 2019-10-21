@@ -3,7 +3,8 @@
 ModelClass::ModelClass()
 {
 	m_vertexBuffer = 0;
-	m_indexBuffer = 0;
+	m_instanceBuffer = 0;
+	m_Texture = 0;
 }
 
 
@@ -61,9 +62,10 @@ ID3D11ShaderResourceView* ModelClass::GetTexture()
 bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
+	InstanceType* instances;
 	unsigned long* indices;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	D3D11_BUFFER_DESC vertexBufferDesc, instanceBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, instanceData;
 	HRESULT result;
 
 	m_vertexCount = 36;
@@ -82,113 +84,187 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 		return false;
 	}
 
-	vertices[0].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // Bottom left.			FRONT
+	//vertices[0].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // Bottom left.			FRONT
+	//vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[1].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // Top left.
+	//vertices[1].texture = XMFLOAT2(0.0f, 0.0f);
+	//vertices[2].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // Bottom right.
+	//vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[3].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // top left				FRONT
+	//vertices[3].texture = XMFLOAT2(0.0f, 0.0f);
+	//vertices[4].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + -1.0f);  // Top right.
+	//vertices[4].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[5].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // bottom right.
+	//vertices[5].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[6].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // bottom left			LEFT
+	//vertices[6].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[7].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bottom left back
+	//vertices[7].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[8].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // top left.
+	//vertices[8].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[9].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // top left				LEFT
+	//vertices[9].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[11].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + 1.0f);  // top left back
+	//vertices[11].texture = XMFLOAT2(0.0f, 0.0f);
+	//vertices[10].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bottom left back.
+	//vertices[10].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[12].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // top left			TOP
+	//vertices[12].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[13].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + 1.0f);  // top left back
+	//vertices[13].texture = XMFLOAT2(0.0f, 0.0f);
+	//vertices[14].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + -1.0f);  // top right.
+	//vertices[14].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[15].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + 1.0f);  // top left back			TOP
+	//vertices[15].texture = XMFLOAT2(0.0f, 0.0f);
+	//vertices[16].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back
+	//vertices[16].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[17].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + -1.0f);  // top right.
+	//vertices[17].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[18].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // bot right 			RIGHT
+	//vertices[18].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[19].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + -1.0f);  // top right 
+	//vertices[19].texture = XMFLOAT2(0.0f, 0.0f);
+	//vertices[20].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back
+	//vertices[20].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[21].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // bot right 			RIGHT
+	//vertices[21].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[22].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back
+	//vertices[22].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[23].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + 1.0f);  // bot right back
+	//vertices[23].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[24].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back 			BACK
+	//vertices[24].texture = XMFLOAT2(0.0f, 0.0f);
+	//vertices[25].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + 1.0f);  // top left back
+	//vertices[25].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[26].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bot left back
+	//vertices[26].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[27].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bot left back 			BACK
+	//vertices[27].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[28].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + 1.0f);  // bot right back
+	//vertices[28].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[29].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back
+	//vertices[29].texture = XMFLOAT2(0.0f, 0.0f);
+	//vertices[30].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // bot left 			BOTTOM
+	//vertices[30].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[31].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // bot right
+	//vertices[31].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[32].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + 1.0f);  // bot right back
+	//vertices[32].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[33].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // bot left 			BOTTOM
+	//vertices[33].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[34].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + 1.0f);  // bot right back
+	//vertices[34].texture = XMFLOAT2(1.0f, 0.0f);
+	//vertices[35].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bot left back
+	//vertices[35].texture = XMFLOAT2(0.0f, 0.0f);
+
+	vertices[0].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // Bottom left.			FRONT
 	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[1].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // Top left.
+	vertices[0].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[1].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // Top left.
 	vertices[1].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[2].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // Bottom right.
+	vertices[1].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[2].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // Bottom right.
 	vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[3].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // top left				FRONT
+	vertices[2].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[3].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // top left				FRONT
 	vertices[3].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[4].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + -1.0f);  // Top right.
+	vertices[3].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[4].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // Top right.
 	vertices[4].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[5].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // bottom right.
+	vertices[4].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[5].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // bottom right.
 	vertices[5].texture = XMFLOAT2(1.0f, 1.0f);
-	
-	vertices[6].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // bottom left			LEFT
+	vertices[5].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[6].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // bottom left			LEFT
 	vertices[6].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[7].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bottom left back
+	vertices[6].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[7].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bottom left back
 	vertices[7].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[8].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // top left.
+	vertices[7].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[8].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // top left.
 	vertices[8].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[9].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // top left				LEFT
+	vertices[8].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[9].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // top left				LEFT
 	vertices[9].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[11].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + 1.0f);  // top left back
+	vertices[9].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[11].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // top left back
 	vertices[11].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[10].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bottom left back.
+	vertices[11].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[10].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bottom left back.
 	vertices[10].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[12].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + -1.0f);  // top left			TOP
+	vertices[10].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[12].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // top left				TOP
 	vertices[12].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[13].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + 1.0f);  // top left back
+	vertices[12].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[13].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // top left back
 	vertices[13].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[14].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + -1.0f);  // top right.
+	vertices[13].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[14].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // top right.
 	vertices[14].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[15].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + 1.0f);  // top left back			TOP
+	vertices[14].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[15].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // top left back			TOP
 	vertices[15].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[16].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back
+	vertices[15].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[16].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back
 	vertices[16].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[17].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + -1.0f);  // top right.
+	vertices[16].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[17].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // top right.
 	vertices[17].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[18].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // bot right 			RIGHT
+	vertices[17].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[18].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // bot right 			RIGHT
 	vertices[18].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[19].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + -1.0f);  // top right 
+	vertices[18].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[19].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // top right 
 	vertices[19].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[20].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back
+	vertices[19].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[20].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back
 	vertices[20].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[21].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // bot right 			RIGHT
+	vertices[20].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[21].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // bot right 			RIGHT
 	vertices[21].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[22].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back
+	vertices[21].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[22].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back
 	vertices[22].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[23].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + 1.0f);  // bot right back
+	vertices[21].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[23].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // bot right back
 	vertices[23].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[24].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back 			BACK
+	vertices[23].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[24].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back 			BACK
 	vertices[24].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[25].position = XMFLOAT3(xPos + -1.0f, yPos + 1.0f, zPos + 1.0f);  // top left back
+	vertices[24].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[25].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // top left back
 	vertices[25].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[26].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bot left back
+	vertices[25].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[26].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bot left back
 	vertices[26].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[27].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bot left back 			BACK
+	vertices[26].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[27].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bot left back 		BACK
 	vertices[27].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[28].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + 1.0f);  // bot right back
+	vertices[27].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[28].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // bot right back
 	vertices[28].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[29].position = XMFLOAT3(xPos + 1.0f, yPos + 1.0f, zPos + 1.0f);  // top right back
+	vertices[28].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[29].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // top right back
 	vertices[29].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[30].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // bot left 			BOTTOM
+	vertices[29].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[30].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // bot left 			BOTTOM
 	vertices[30].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[31].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + -1.0f);  // bot right
+	vertices[30].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[31].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // bot right
 	vertices[31].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[32].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + 1.0f);  // bot right back
+	vertices[31].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[32].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // bot right back
 	vertices[32].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[33].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // bot left 			BOTTOM
+	vertices[32].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[33].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // bot left 			BOTTOM
 	vertices[33].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[34].position = XMFLOAT3(xPos + 1.0f, yPos + -1.0f, zPos + 1.0f);  // bot right back
+	vertices[33].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[34].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // bot right back
 	vertices[34].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[35].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + 1.0f);  // bot left back
+	vertices[34].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[35].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // bot left back
 	vertices[35].texture = XMFLOAT2(0.0f, 0.0f);
+	vertices[35].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
 	indices[0] = 0;
 	indices[1] = 1;
@@ -244,38 +320,78 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 		return false;
 	}
 
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
+	/*instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	instanceBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
+	instanceBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	instanceBufferDesc.CPUAccessFlags = 0;
+	instanceBufferDesc.MiscFlags = 0;
+	instanceBufferDesc.StructureByteStride = 0;
 
-	indexData.pSysMem = indices;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
+	instanceData.pSysMem = indices;
+	instanceData.SysMemPitch = 0;
+	instanceData.SysMemSlicePitch = 0;
 
-	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
+	result = device->CreateBuffer(&instanceBufferDesc, &instanceData, &m_instanceBuffer);
+	if (FAILED(result))
+	{
+		return false;
+	}*/
+
+	delete[] vertices;
+	vertices = 0;
+
+	//delete[] indices;
+	//indices = 0;
+
+	m_instanceCount = 1000;
+
+	instances = new InstanceType[m_instanceCount];
+
+	/*instances[0].position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	instances[1].position = XMFLOAT3(3.0f, 0.0f, 0.0f);
+	instances[2].position = XMFLOAT3(0.0f, 3.0f, 0.0f);
+	instances[3].position = XMFLOAT3(0.0f, 0.0f, 3.0f);*/
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			for (int k = 0; k < 10; k++)
+			{
+				int index = i * 100 + j * 10 + k;
+				instances[index].position = XMFLOAT3(i * 3.0f, j * 3.0f, k * 3.0f);
+			}
+		}
+	}
+
+	instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	instanceBufferDesc.ByteWidth = sizeof(InstanceType) * m_instanceCount;
+	instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	instanceBufferDesc.CPUAccessFlags = 0;
+	instanceBufferDesc.MiscFlags = 0;
+	instanceBufferDesc.StructureByteStride = 0;
+
+	instanceData.pSysMem = instances;
+	instanceData.SysMemPitch = 0;
+	instanceData.SysMemSlicePitch = 0;
+
+	result = device->CreateBuffer(&instanceBufferDesc, &instanceData, &m_instanceBuffer);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
-	delete[] vertices;
-	vertices = 0;
-
-	delete[] indices;
-	indices = 0;
+	delete[] instances;
+	instances = 0;
 
 	return true;
 }
 
 void ModelClass::ShutdownBuffers()
 {
-	if (m_indexBuffer)
+	if (m_instanceBuffer)
 	{
-		m_indexBuffer->Release();
-		m_indexBuffer = 0;
+		m_instanceBuffer->Release();
+		m_instanceBuffer = 0;
 	}
 
 	if (m_vertexBuffer)
@@ -289,15 +405,22 @@ void ModelClass::ShutdownBuffers()
 
 void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
-	unsigned int stride;
-	unsigned int offset;
+	unsigned int strides[2];
+	unsigned int offsets[2];
+	ID3D11Buffer* bufferPointers[2];
 
-	stride = sizeof(VertexType);
-	offset = 0;
+	strides[0] = sizeof(VertexType);
+	strides[1] = sizeof(InstanceType);
 
-	deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+	offsets[0] = 0;
+	offsets[1] = 0;
 
-	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	bufferPointers[0] = m_vertexBuffer;
+	bufferPointers[1] = m_instanceBuffer;
+
+	deviceContext->IASetVertexBuffers(0, 2, bufferPointers, strides, offsets);
+
+	deviceContext->IASetIndexBuffer(m_instanceBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -345,4 +468,14 @@ void ModelClass::SetPosition(float _x, float _y, float _z)
 XMFLOAT3 ModelClass::GetPosition()
 {
 	return XMFLOAT3(xPos, yPos, zPos);
+}
+
+int ModelClass::GetVertexCount()
+{
+	return m_vertexCount;
+}
+
+int ModelClass::GetInstanceCount()
+{
+	return m_instanceCount;
 }

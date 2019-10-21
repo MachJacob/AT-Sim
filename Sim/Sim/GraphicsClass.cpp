@@ -39,11 +39,11 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 
 
 	char file[] = "../Sim/data/stone01.tga";
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		for (int j = 0; j < 10; j++)
+		for (int j = 0; j < 1; j++)
 		{
-			for (int k = 0; k < 10; k++)
+			for (int k = 0; k < 1; k++)
 			{
 				models.push_back(std::make_unique<ModelClass>());
 
@@ -58,6 +58,28 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 			}
 		}
 	}
+
+	m_lightShader = new LightShaderClass;
+	if (!m_lightShader)
+	{
+		return false;
+	}
+
+	result = m_lightShader->Initialise(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_light = new LightClass;
+	if (!m_light)
+	{
+		return false;
+	}
+
+	m_light->SetDiffuseColour(1.0f, 0.0f, 0.0f, 1.0f);
+	m_light->SetDirection(0.0f, 0.0f, 1.0f);
 
 	m_textureShader = new TextureShaderClass;
 	if (!m_textureShader)
@@ -90,6 +112,19 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
+	if (m_light)
+	{
+		delete m_light;
+		m_light = 0;
+	}
+
+	if (m_lightShader)
+	{
+		m_lightShader->Shutdown();
+		delete m_lightShader;
+		m_lightShader = 0;
+	}
+
 	if (m_textureShader)
 	{
 		m_textureShader->Shutdown();
@@ -141,8 +176,15 @@ void GraphicsClass::Shutdown()
 bool GraphicsClass::Frame()
 {
 	bool result;
+	
+	static float rotation = 0.0f;
 
-	result = Render();
+	rotation += (float)XM_PI * 0.01f;
+	if (rotation > 360.0f)
+	{
+		rotation = -360.0f;
+	}
+	result = Render(rotation);
 	if (!result)
 	{
 		return false;
@@ -152,7 +194,7 @@ bool GraphicsClass::Frame()
 }
 
 
-bool GraphicsClass::Render()
+bool GraphicsClass::Render(float rotation)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	bool result;
@@ -168,7 +210,14 @@ bool GraphicsClass::Render()
 	{
 		models[i]->Render(m_Direct3D->GetDeviceContext());
 
-		result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), models[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, models[i]->GetTexture());
+		/*result = m_textureShader->Render(m_Direct3D->GetDeviceContext(), models[i]->GetVertexCount(), models[i]->GetInstanceCount(), worldMatrix, viewMatrix, projectionMatrix, models[i]->GetTexture());
+		if (!result)
+		{
+			return false;
+		}*/
+
+		result = m_lightShader->Render(m_Direct3D->GetDeviceContext(), models[i]->GetVertexCount(), models[i]->GetInstanceCount(), worldMatrix, 
+			viewMatrix, projectionMatrix, models[i]->GetTexture(), m_light->GetDirection(), m_light->GetDiffuseColour());
 		if (!result)
 		{
 			return false;

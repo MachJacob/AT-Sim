@@ -105,7 +105,7 @@ void SystemClass::Run()
 		else
 		{
 			float current_time = (float)timeGetTime();
-			float m_delta = (current_time - m_previousTime) * 0.001f;;
+			float m_delta = (current_time - m_previousTime) * 0.001f;
 			m_previousTime = current_time;
 
 			result = Frame(m_delta);
@@ -148,27 +148,27 @@ bool SystemClass::Frame(float dt)
 	}
 	if (m_input->IsKeyDown(69)) //e
 	{
-		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y + 1, m_camera->GetPosition().z);
+		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y + 60 * dt, m_camera->GetPosition().z);
 	}
 	if (m_input->IsKeyDown(81)) //q
 	{
-		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y - 1, m_camera->GetPosition().z);
+		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y - 60 * dt, m_camera->GetPosition().z);
 	}
 	if (m_input->IsKeyDown(VK_LEFT))
 	{
-		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y - 1, m_camera->GetRotation().z );
+		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y - 60 * dt, m_camera->GetRotation().z );
 	}
 	if (m_input->IsKeyDown(VK_RIGHT))
 	{
-		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y + 1, m_camera->GetRotation().z);
+		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y + 60 * dt, m_camera->GetRotation().z);
 	}
 	if (m_input->IsKeyDown(VK_UP))
 	{
-		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z + 1);
+		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z + 60 * dt);
 	}
 	if (m_input->IsKeyDown(VK_DOWN))
 	{
-		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z - 1);
+		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z - 60 * dt);
 	}
 	
 	result = m_graphics->Frame();

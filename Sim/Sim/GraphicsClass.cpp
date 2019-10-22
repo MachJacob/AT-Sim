@@ -37,7 +37,7 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-
+	char model[] = "../Sim/data/cube.txt";
 	char file[] = "../Sim/data/stone01.tga";
 	for (int i = 0; i < 1; i++)
 	{
@@ -49,7 +49,7 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 
 				models[i * 100 + j * 10 + k]->SetPosition(i * 5, k * 5, j * 5);
 
-				result = models[i * 100 + j * 10 + k]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), file);
+				result = models[i * 100 + j * 10 + k]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), model, file);
 				if (!result)
 				{
 					MessageBox(hwnd, L"Could not initialise the model object.", L"Error", MB_OK);
@@ -78,8 +78,9 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_light->SetDiffuseColour(1.0f, 0.0f, 0.0f, 1.0f);
-	m_light->SetDirection(0.0f, 0.0f, 1.0f);
+	m_light->SetAmbientColour(0.0f, 0.15f, 0.15f, 1.0f);
+	m_light->SetDiffuseColour(0.0f, 1.0f, 1.0f, 1.0f);
+	m_light->SetDirection(1.0f, -1.0f, 1.0f);
 
 	m_textureShader = new TextureShaderClass;
 	if (!m_textureShader)
@@ -198,7 +199,7 @@ bool GraphicsClass::Render(float rotation)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	bool result;
-	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+	m_Direct3D->BeginScene(0.1f, 0.1f, 0.1f, 1.0f);
 
 	m_camera->Render();
 
@@ -217,7 +218,7 @@ bool GraphicsClass::Render(float rotation)
 		}*/
 
 		result = m_lightShader->Render(m_Direct3D->GetDeviceContext(), models[i]->GetVertexCount(), models[i]->GetInstanceCount(), worldMatrix, 
-			viewMatrix, projectionMatrix, models[i]->GetTexture(), m_light->GetDirection(), m_light->GetDiffuseColour());
+			viewMatrix, projectionMatrix, models[i]->GetTexture(), m_light->GetDirection(), m_light->GetDiffuseColour(), m_light->GetAmbientColour());
 		if (!result)
 		{
 			return false;

@@ -83,9 +83,6 @@
     <ClInclude Include="LightShaderClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LightClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>

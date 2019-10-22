@@ -130,29 +130,29 @@ bool SystemClass::Frame(float dt)
 
 	if (m_input->IsKeyDown(68)) //d
 	{
-		m_camera->SetRightSpeed(60 * dt);
+		m_camera->SetRightSpeed(10 * dt);
 	}
 
 	if (m_input->IsKeyDown(65)) //a
 	{
-		m_camera->SetRightSpeed(-60 * dt);
+		m_camera->SetRightSpeed(-10 * dt);
 	}	
 	if (m_input->IsKeyDown(87)) //w
 	{
-		m_camera->SetForwardSpeed(60 * dt);
+		m_camera->SetForwardSpeed(10 * dt);
 	}
 
 	if (m_input->IsKeyDown(83)) //s
 	{
-		m_camera->SetForwardSpeed(-60 * dt);
+		m_camera->SetForwardSpeed(-10 * dt);
 	}
 	if (m_input->IsKeyDown(69)) //e
 	{
-		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y + 60 * dt, m_camera->GetPosition().z);
+		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y + 10 * dt, m_camera->GetPosition().z);
 	}
 	if (m_input->IsKeyDown(81)) //q
 	{
-		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y - 60 * dt, m_camera->GetPosition().z);
+		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y - 10 * dt, m_camera->GetPosition().z);
 	}
 	if (m_input->IsKeyDown(VK_LEFT))
 	{

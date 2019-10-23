@@ -65,9 +65,9 @@ void CameraClass::Render()
 	position.z = m_positionZ;
 	positionVector = XMLoadFloat3(&position);
 
-	lookAt.x = 1.0f;
+	lookAt.x = 0.0f;
 	lookAt.y = 0.0f;
-	lookAt.z = 0.0f;
+	lookAt.z = 1.0f;
 	lookAtVector = XMLoadFloat3(&lookAt);
 
 	pitch = m_rotationX * 0.0174532925f;
@@ -79,17 +79,26 @@ void CameraClass::Render()
 	RotateY = XMMatrixRotationY(yaw);
 	camRight = XMVector3TransformCoord(DefaultRight, RotateY);
 	camForward = XMVector3TransformCoord(DefaultForward, RotateY);
+	/*XMMATRIX RotateX;
+	RotateX = XMMatrixRotationX(pitch);
+	camUp = XMVector3TransformCoord(DefaultUp, RotateX);*/
 	
 	positionVector = XMVectorAdd(positionVector, moveBackForward * camForward);
 	positionVector = XMVectorAdd(positionVector, moveLeftRight * camRight);
+	/*positionVector = XMVectorAdd(positionVector, moveDownUp * camUp);*/
 	XMFLOAT3 vFor;
 	XMStoreFloat3(&vFor, camForward);
 	XMFLOAT3 vRig;
 	XMStoreFloat3(&vRig, camRight);
+	/*XMFLOAT3 vUp;
+	XMStoreFloat3(&vUp, camUp);*/
 
 	m_positionX += (vFor.x * moveBackForward) + (vRig.x * moveLeftRight);
 	m_positionY += (vFor.y * moveBackForward) + (vRig.y * moveLeftRight);
 	m_positionZ += (vFor.z * moveBackForward) + (vRig.z * moveLeftRight);
+	/*m_positionX += (vFor.x * moveBackForward) + (vUp.x * moveDownUp) + (vRig.x * moveLeftRight);
+	m_positionY += (vFor.y * moveBackForward) + (vUp.y * moveDownUp) + (vRig.y * moveLeftRight);
+	m_positionZ += (vFor.z * moveBackForward) + (vUp.z * moveDownUp) + (vRig.z * moveLeftRight);*/
 
 	lookAtVector = XMVector3TransformCoord(lookAtVector, rotationMatrix);
 	upVector = XMVector3TransformCoord(upVector, rotationMatrix);
@@ -100,6 +109,7 @@ void CameraClass::Render()
 
 	moveBackForward = 0;
 	moveLeftRight = 0;
+	moveDownUp = 0;
 
 	return;
 }
@@ -118,4 +128,9 @@ void CameraClass::SetForwardSpeed(float _speed)
 void CameraClass::SetRightSpeed(float _speed)
 {
 	moveLeftRight += _speed;
+}
+
+void CameraClass::SetUpSpeed(float _speed)
+{
+	moveDownUp += _speed;
 }

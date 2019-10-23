@@ -361,25 +361,34 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 	//delete[] indices;
 	//indices = 0;
 
-	m_instanceCount = 1000;
+	m_instanceCount = 10000;
 
 	instances = new InstanceType[m_instanceCount];
 
-	/*instances[0].position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	instances[1].position = XMFLOAT3(3.0f, 0.0f, 0.0f);
-	instances[2].position = XMFLOAT3(0.0f, 3.0f, 0.0f);
-	instances[3].position = XMFLOAT3(0.0f, 0.0f, 3.0f);*/
-	for (int i = 0; i < 10; i++)
+	//instances[0].position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	//instances[1].position = XMFLOAT3(3.0f, 0.0f, 0.0f);
+	//instances[2].position = XMFLOAT3(0.0f, 3.0f, 0.0f);
+	//instances[3].position = XMFLOAT3(0.0f, 0.0f, 3.0f);
+	for (int i = 0; i < 100; i++)
 	{
-		for (int j = 0; j < 10; j++)
+		for (int j = 0; j < 100; j++)
 		{
-			for (int k = 0; k < 10; k++)
+			int index = i * 100 + j;
+			instances[index].position = XMFLOAT3(i * 2.0f, 0.0f, j * 2.0f);
+		}
+	}
+
+	/*for (int i = 0; i < 100; i++) //GIGA CUBE
+	{
+		for (int j = 0; j < 100; j++)
+		{
+			for (int k = 0; k < 100; k++)
 			{
-				int index = i * 100 + j * 10 + k;
+				int index = i * 10000 + j * 100 + k;
 				instances[index].position = XMFLOAT3(i * 3.0f, j * 3.0f, k * 3.0f);
 			}
 		}
-	}
+	}*/
 
 	instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	instanceBufferDesc.ByteWidth = sizeof(InstanceType) * m_instanceCount;

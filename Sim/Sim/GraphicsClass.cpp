@@ -78,8 +78,8 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_light->SetAmbientColour(0.0f, 0.15f, 0.15f, 1.0f);
-	m_light->SetDiffuseColour(0.0f, 1.0f, 1.0f, 1.0f);
+	m_light->SetAmbientColour(0.15f, 0.15f, 0.15f, 1.0f);
+	m_light->SetDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
 	m_light->SetDirection(1.0f, -1.0f, 1.0f);
 
 	m_textureShader = new TextureShaderClass;

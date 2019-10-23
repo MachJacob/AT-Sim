@@ -1,6 +1,6 @@
 #include "SystemClass.h"
 #include <time.h>
-#include<timeapi.h>
+#include <timeapi.h>
 
 SystemClass::SystemClass()
 {
@@ -51,7 +51,7 @@ bool SystemClass::Initialise()
 	m_graphics->SetCamera(m_camera);
 
 	m_camera->SetPosition(-5.0f, 0.0f, 0.0f);
-	m_camera->SetRotation(0.0f, 0.0f, 0.0f);
+	m_camera->SetRotation(0.0f, 90.0f, 0.0f);
 
 	if (!result)
 	{
@@ -128,35 +128,38 @@ bool SystemClass::Frame(float dt)
 		return false;
 	}
 
-	if (m_input->IsKeyDown(68)) //d
+	if (m_input->IsKeyDown('D')) //d
 	{
 		m_camera->SetRightSpeed(10 * dt);
 	}
 
-	if (m_input->IsKeyDown(65)) //a
+	if (m_input->IsKeyDown('A')) //a
 	{
 		m_camera->SetRightSpeed(-10 * dt);
 	}	
-	if (m_input->IsKeyDown(87)) //w
+	if (m_input->IsKeyDown('W')) //w
 	{
 		m_camera->SetForwardSpeed(10 * dt);
 	}
 
-	if (m_input->IsKeyDown(83)) //s
+	if (m_input->IsKeyDown('S')) //s
 	{
 		m_camera->SetForwardSpeed(-10 * dt);
 	}
-	if (m_input->IsKeyDown(69)) //e
+	if (m_input->IsKeyDown('E')) //e
 	{
 		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y + 10 * dt, m_camera->GetPosition().z);
+		//m_camera->SetUpSpeed(10 * dt);
 	}
-	if (m_input->IsKeyDown(81)) //q
+	if (m_input->IsKeyDown('Q')) //q
 	{
 		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y - 10 * dt, m_camera->GetPosition().z);
+		//m_camera->SetUpSpeed(10 * dt);
 	}
 	if (m_input->IsKeyDown(VK_LEFT))
 	{
 		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y - 60 * dt, m_camera->GetRotation().z );
+		m_camera->SetUpSpeed(10 * dt);
 	}
 	if (m_input->IsKeyDown(VK_RIGHT))
 	{
@@ -164,11 +167,11 @@ bool SystemClass::Frame(float dt)
 	}
 	if (m_input->IsKeyDown(VK_UP))
 	{
-		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z + 60 * dt);
+		m_camera->SetRotation(m_camera->GetRotation().x - 60 * dt, m_camera->GetRotation().y, m_camera->GetRotation().z);
 	}
 	if (m_input->IsKeyDown(VK_DOWN))
 	{
-		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y, m_camera->GetRotation().z - 60 * dt);
+		m_camera->SetRotation(m_camera->GetRotation().x + 60 * dt, m_camera->GetRotation().y, m_camera->GetRotation().z);
 	}
 	
 	result = m_graphics->Frame();

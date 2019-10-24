@@ -37,7 +37,7 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	char model[] = "../Sim/data/cube.txt";
+	/*char model[] = "../Sim/data/cube.txt";
 	char file[] = "../Sim/data/stone01.tga";
 	for (int i = 0; i < 1; i++)
 	{
@@ -57,7 +57,7 @@ bool GraphicsClass::Initialise(int screenWidth, int screenHeight, HWND hwnd)
 				}
 			}
 		}
-	}
+	}*/
 
 	m_lightShader = new LightShaderClass;
 	if (!m_lightShader)
@@ -245,4 +245,37 @@ CameraClass* GraphicsClass::GetCamera()
 void GraphicsClass::SetCamera(CameraClass* _cam)
 {
 	m_camera = _cam;
+}
+
+bool GraphicsClass::AddModel(char* modelFilename, char* textureFilename, float x)
+{
+	if (!modelTypes.size())
+	{
+		models.push_back(std::make_unique<ModelClass>());
+		models[0]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), modelFilename, textureFilename);
+		modelTypes.push_back(std::make_unique<ModelType>());
+		modelTypes[0]->modelFilename = modelFilename;
+		modelTypes[0]->textureFileName = textureFilename;
+		modelTypes[0]->model = models[0].get();
+	}
+	else
+	{
+		for (int i = 0; i < models.size(); i++)
+		{	//compare filenames to all modeltypes
+			if (modelTypes[i]->modelFilename == modelFilename && modelTypes[i]->textureFileName == textureFilename)
+			{	//if not unique, add to matching modeltype
+				modelTypes[i]->model->AddModel(m_Direct3D->GetDeviceContext(), x);
+			}
+			else	
+			{	//if unique, make new model type
+				models.push_back(std::make_unique<ModelClass>());
+				models[i]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), modelFilename, textureFilename);
+				modelTypes.push_back(std::make_unique<ModelType>());
+				modelTypes[i]->modelFilename = modelFilename;
+				modelTypes[i]->textureFileName = textureFilename;
+				modelTypes[i]->model = models[i].get();
+			}
+		}	
+	}
+	return true;
 }

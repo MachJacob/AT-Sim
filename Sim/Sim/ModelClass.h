@@ -5,6 +5,7 @@
 #include <DirectXMath.h>
 #include "TextureClass.h"
 #include <fstream>
+#include <vector>
 
 using namespace std;
 using namespace DirectX;
@@ -50,6 +51,8 @@ public:
 	int GetInstanceCount();
 	ID3D11ShaderResourceView* GetTexture();
 
+	bool AddModel(ID3D11DeviceContext*, float);
+
 private:
 	bool InitialiseBuffers(ID3D11Device*);
 	void ShutdownBuffers();
@@ -66,7 +69,9 @@ private:
 	int m_vertexCount, m_indexCount;
 
 	int m_instanceCount;
+	int m_maxInstanceCount = 10000;
 	TextureClass* m_Texture;
+	std::vector<InstanceType> m_instances;
 
 	ModelType* m_model;
 

@@ -173,6 +173,13 @@ bool SystemClass::Frame(float dt)
 	{
 		m_camera->SetRotation(m_camera->GetRotation().x + 60 * dt, m_camera->GetRotation().y, m_camera->GetRotation().z);
 	}
+	if (m_input->IsKeyDown('T'))
+	{
+		char model[] = "../Sim/data/cube.txt";
+		char file[] = "../Sim/data/stone01.tga";
+		m_graphics->AddModel(model, file, space);
+		space += 5.0f;
+	}
 	
 	result = m_graphics->Frame();
 	if (!result)

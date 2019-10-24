@@ -70,8 +70,8 @@ ID3D11ShaderResourceView* ModelClass::GetTexture()
 bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
-	InstanceType* instances;
-	unsigned long* indices;
+	//InstanceType* instances;
+	//unsigned long* indices;
 	D3D11_BUFFER_DESC vertexBufferDesc, instanceBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, instanceData;
 	HRESULT result;
@@ -87,11 +87,11 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 		return false;
 	}
 
-	indices = new unsigned long[m_indexCount];
-	if (!indices)
-	{
-		return false;
-	}
+	//indices = new unsigned long[m_indexCount];
+	//if (!indices)
+	//{
+	//	return false;
+	//}
 
 	for (i = 0; i < m_vertexCount; i++)
 	{
@@ -99,7 +99,7 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 		vertices[i].texture = XMFLOAT2(m_model[i].tu, m_model[i].tv);
 		vertices[i].normal = XMFLOAT3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
 
-		indices[i] = i;
+		//indices[i] = i;
 	}
 
 	//vertices[0].position = XMFLOAT3(xPos + -1.0f, yPos + -1.0f, zPos + -1.0f);  // Bottom left.			FRONT
@@ -355,28 +355,13 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 		return false;
 	}*/
 
-	delete[] vertices;
-	vertices = 0;
-
 	//delete[] indices;
 	//indices = 0;
 
-	m_instanceCount = 10000;
-
-	instances = new InstanceType[m_instanceCount];
-
-	//instances[0].position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//instances[1].position = XMFLOAT3(3.0f, 0.0f, 0.0f);
-	//instances[2].position = XMFLOAT3(0.0f, 3.0f, 0.0f);
-	//instances[3].position = XMFLOAT3(0.0f, 0.0f, 3.0f);
-	for (int i = 0; i < 100; i++)
-	{
-		for (int j = 0; j < 100; j++)
-		{
-			int index = i * 100 + j;
-			instances[index].position = XMFLOAT3(i * 2.0f, 0.0f, j * 2.0f);
-		}
-	}
+	//m_maxInstanceCount = 10000;
+	m_instances.push_back(InstanceType());
+	m_instances[0].position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_instanceCount = 1;
 
 	/*for (int i = 0; i < 100; i++) //GIGA CUBE
 	{
@@ -390,14 +375,14 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 		}
 	}*/
 
-	instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	instanceBufferDesc.ByteWidth = sizeof(InstanceType) * m_instanceCount;
+	instanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	instanceBufferDesc.ByteWidth = sizeof(InstanceType) * m_maxInstanceCount;
 	instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	instanceBufferDesc.CPUAccessFlags = 0;
+	instanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	instanceBufferDesc.MiscFlags = 0;
 	instanceBufferDesc.StructureByteStride = 0;
 
-	instanceData.pSysMem = instances;
+	instanceData.pSysMem = m_instances.data();
 	instanceData.SysMemPitch = 0;
 	instanceData.SysMemSlicePitch = 0;
 
@@ -407,8 +392,12 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 		return false;
 	}
 
-	delete[] instances;
-	instances = 0;
+	delete[] vertices;
+	vertices = 0;
+
+	i = 99;
+	/*delete[] instances;
+	instances = 0;*/
 
 	return true;
 }
@@ -564,5 +553,27 @@ int ModelClass::GetVertexCount()
 
 int ModelClass::GetInstanceCount()
 {
-	return m_instanceCount;
+	return m_maxInstanceCount;
+}
+
+bool ModelClass::AddModel(ID3D11DeviceContext* deviceContext, float space)
+{
+	D3D11_MAPPED_SUBRESOURCE data;
+	ZeroMemory(&data, sizeof(data));
+
+	m_instances.push_back(InstanceType());
+	m_instanceCount = m_instances.size();
+	size_t copySize = sizeof(InstanceType) * m_instanceCount;
+
+	m_instances.back().position = XMFLOAT3(0.0f, space, 0.0f);
+
+	HRESULT result;
+	result = deviceContext->Map(m_instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	if (FAILED(result))
+	{
+		return false;
+	}
+	memcpy(data.pData, m_instances.data(), copySize);
+	deviceContext->Unmap(m_instanceBuffer, 0);
+	return true;
 }

@@ -18,6 +18,13 @@ const float	SCREEN_NEAR = 0.1f;
 
 class GraphicsClass
 {
+private:
+	struct ModelType
+	{
+		char* modelFilename;
+		char* textureFileName;
+		ModelClass* model;
+	};
 public:
 	GraphicsClass();
 	GraphicsClass(const GraphicsClass&);
@@ -29,6 +36,8 @@ public:
 
 	void SetCamera(CameraClass*);
 	CameraClass* GetCamera();
+
+	bool AddModel(char*, char*, float x);
 
 private:
 
@@ -46,5 +55,6 @@ private:
 	LightClass* m_light;
 
 	std::vector<std::unique_ptr<ModelClass>> models;
+	std::vector<std::unique_ptr<ModelType>> modelTypes;
 };
 #endif // _GRAPHICSCLASS_H_

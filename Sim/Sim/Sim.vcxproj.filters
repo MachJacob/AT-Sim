@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{42294fb7-1b4d-4286-ba46-14639f2eae18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -89,22 +92,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Color.ps">
-      <Filter>Source Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="Color.vs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Texture.vs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Texture.ps">
-      <Filter>Source Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="Light.ps">
-      <Filter>Source Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="Light.vs">
-      <Filter>Source Files</Filter>
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Texture.ps">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Texture.vs">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

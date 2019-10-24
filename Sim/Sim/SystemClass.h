@@ -37,6 +37,8 @@ private:
 	CameraClass* m_camera;
 
 	float m_previousTime = 0;
+
+	float space = 0.0f;
 };
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

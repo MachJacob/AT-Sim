@@ -5,8 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <Windows.h>
-#include "inputclass.h"
-#include "graphicsclass.h"
+#include "Game.h"
 #include <vector>
 
 class SystemClass
@@ -34,11 +33,9 @@ private:
 
 	InputClass* m_input;
 	GraphicsClass* m_graphics;
-	CameraClass* m_camera;
+	Game* m_game;
 
 	float m_previousTime = 0;
-
-	float space = 0.0f;
 };
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

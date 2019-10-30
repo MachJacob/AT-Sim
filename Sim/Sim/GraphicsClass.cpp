@@ -247,7 +247,7 @@ void GraphicsClass::SetCamera(CameraClass* _cam)
 	m_camera = _cam;
 }
 
-bool GraphicsClass::AddModel(char* modelFilename, char* textureFilename, float x)
+bool GraphicsClass::AddModel(char* modelFilename, char* textureFilename, GameObject* object)
 {
 	if (!modelTypes.size())
 	{
@@ -264,7 +264,7 @@ bool GraphicsClass::AddModel(char* modelFilename, char* textureFilename, float x
 		{	//compare filenames to all modeltypes
 			if (modelTypes[i]->modelFilename == modelFilename && modelTypes[i]->textureFileName == textureFilename)
 			{	//if not unique, add to matching modeltype
-				modelTypes[i]->model->AddModel(m_Direct3D->GetDeviceContext(), x);
+				modelTypes[i]->model->AddModel(m_Direct3D->GetDeviceContext(), object);
 			}
 			else	
 			{	//if unique, make new model type

@@ -15,6 +15,7 @@ public:
 
 	bool Tick(float);
 	bool Render();
+	bool AddModel(char*, char*, GameObject*);
 
 private:
 	InputClass* m_input;

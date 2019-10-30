@@ -37,7 +37,7 @@ public:
 	void SetCamera(CameraClass*);
 	CameraClass* GetCamera();
 
-	bool AddModel(char*, char*, float x);
+	bool AddModel(char*, char*, GameObject*);
 
 private:
 

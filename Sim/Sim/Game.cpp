@@ -93,7 +93,8 @@ bool Game::Tick(float dt)
 	{
 		char model[] = "../Sim/data/cube.txt";
 		char file[] = "../Sim/data/stone01.tga";
-		m_graphics->AddModel(model, file, space);
+		objects.push_back(std::make_unique<GameObject>());
+		m_graphics->AddModel(model, file, objects.back);
 		space += 5.0f;
 	}
 	return true;
@@ -103,4 +104,10 @@ bool Game::Render()
 {
 	//render game
 	return true;
+}
+
+bool Game::AddModel(char* modelFilename, char* textureFilename, GameObject* object)
+{
+
+	return false;
 }

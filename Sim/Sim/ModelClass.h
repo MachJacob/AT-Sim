@@ -6,6 +6,7 @@
 #include "TextureClass.h"
 #include <fstream>
 #include <vector>
+#include "GameObject.h"
 
 using namespace std;
 using namespace DirectX;
@@ -27,9 +28,12 @@ private:
 		float nx, ny, nz;
 	};
 
+public:
+
 	struct InstanceType
 	{
 		XMFLOAT3 position;
+		GameObject* object;
 	};
 
 public:
@@ -51,7 +55,8 @@ public:
 	int GetInstanceCount();
 	ID3D11ShaderResourceView* GetTexture();
 
-	bool AddModel(ID3D11DeviceContext*, float);
+	bool AddModel(ID3D11DeviceContext*, GameObject*);
+	bool UpdateModels(ID3D11DeviceContext*);
 
 private:
 	bool InitialiseBuffers(ID3D11Device*);

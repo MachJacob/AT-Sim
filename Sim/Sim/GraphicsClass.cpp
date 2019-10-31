@@ -185,6 +185,10 @@ bool GraphicsClass::Frame()
 	{
 		rotation = -360.0f;
 	}
+	for (int i = 0; i < models.size(); i++)
+	{
+		models[i]->UpdateModels(m_Direct3D->GetDeviceContext());
+	}
 	result = Render(rotation);
 	if (!result)
 	{
@@ -254,28 +258,36 @@ bool GraphicsClass::AddModel(char* modelFilename, char* textureFilename, GameObj
 		models.push_back(std::make_unique<ModelClass>());
 		models[0]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), modelFilename, textureFilename);
 		modelTypes.push_back(std::make_unique<ModelType>());
-		modelTypes[0]->modelFilename = modelFilename;
-		modelTypes[0]->textureFileName = textureFilename;
+		string* idk = new string(modelFilename);
+		string* idk2 = new string(textureFilename);
+		modelTypes[0]->modelFilename = idk;
+		modelTypes[0]->textureFileName = idk2;
 		modelTypes[0]->model = models[0].get();
 	}
 	else
 	{
-		for (int i = 0; i < models.size(); i++)
+		bool newModel = true;
+		int modelSize = models.size();
+		for (int i = 0; i < modelSize; i++)
 		{	//compare filenames to all modeltypes
-			if (modelTypes[i]->modelFilename == modelFilename && modelTypes[i]->textureFileName == textureFilename)
+			int d = modelTypes[i]->modelFilename->compare(modelFilename);
+			if (!modelTypes[i]->modelFilename->compare(modelFilename) && !modelTypes[i]->textureFileName->compare(textureFilename))
 			{	//if not unique, add to matching modeltype
 				modelTypes[i]->model->AddModel(m_Direct3D->GetDeviceContext(), object);
-			}
-			else	
-			{	//if unique, make new model type
-				models.push_back(std::make_unique<ModelClass>());
-				models[i]->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), modelFilename, textureFilename);
-				modelTypes.push_back(std::make_unique<ModelType>());
-				modelTypes[i]->modelFilename = modelFilename;
-				modelTypes[i]->textureFileName = textureFilename;
-				modelTypes[i]->model = models[i].get();
+				newModel = false;
+				break;
 			}
 		}	
+		if (newModel)
+		{
+			models.push_back(std::make_unique<ModelClass>());
+			models.back()->Initialise(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), modelFilename, textureFilename);
+			modelTypes.push_back(std::make_unique<ModelType>());
+			modelTypes.back()->modelFilename = new string(modelFilename);
+			modelTypes.back()->textureFileName = new string(textureFilename);
+			modelTypes.back()->model = models.back().get();
+		}
+
 	}
 	return true;
 }

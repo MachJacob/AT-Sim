@@ -1,7 +1,8 @@
 #pragma once
 #include "inputclass.h"
 #include "graphicsclass.h"
-#include "GameObject.h"
+#include "Spawner.h"
+#include "Entity.h"
 #include <vector>
 class Game
 {

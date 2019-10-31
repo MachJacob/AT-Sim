@@ -140,9 +140,13 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 	//indices = 0;
 
 	//m_maxInstanceCount = 10000;
-	m_instances.push_back(InstanceType());
-	m_instances[0].position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_instanceCount = 1;
+	//m_instances[0] = new InstanceType();
+		//.push_back(InstanceType());
+	m_instances[0].position = XMFLOAT3(9999.0f, 9999.0f, 9999.0f);
+	//m_instances[1] = new InstanceType(); 
+	//.push_back(InstanceType());
+	m_instances[1].position = XMFLOAT3(9999.0f, 9999.0f, 9999.0f);
+	m_instanceCount = 2;
 
 	/*for (int i = 0; i < 100; i++) //GIGA CUBE
 	{
@@ -163,7 +167,7 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 	instanceBufferDesc.MiscFlags = 0;
 	instanceBufferDesc.StructureByteStride = 0;
 
-	instanceData.pSysMem = m_instances.data();
+	instanceData.pSysMem = m_instances;
 	instanceData.SysMemPitch = 0;
 	instanceData.SysMemSlicePitch = 0;
 
@@ -176,7 +180,7 @@ bool ModelClass::InitialiseBuffers(ID3D11Device* device)
 	delete[] vertices;
 	vertices = 0;
 
-	i = 99;
+	//i = 99;
 	/*delete[] instances;
 	instances = 0;*/
 
@@ -342,12 +346,14 @@ bool ModelClass::AddModel(ID3D11DeviceContext* deviceContext, GameObject* object
 	D3D11_MAPPED_SUBRESOURCE data;
 	ZeroMemory(&data, sizeof(data));
 
-	m_instances.push_back(InstanceType());
-	m_instanceCount = m_instances.size();
+	//m_instances[m_instanceCount] = new InstanceType();
+	m_instanceCount++;
 	size_t copySize = sizeof(InstanceType) * m_instanceCount;
 
-	m_instances.back().position = XMFLOAT3(9999.0f, 9999.0f, 9999.0f);
-	m_instances.back().object = object;
+	m_instances[m_instanceCount - 1].position = XMFLOAT3(9999.0f, 9999.0f, 9999.0f);
+	m_instances[m_instanceCount - 1].scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	m_instances[m_instanceCount - 1].rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_instances[m_instanceCount - 1].object = object;
 
 	HRESULT result;
 	result = deviceContext->Map(m_instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
@@ -355,7 +361,7 @@ bool ModelClass::AddModel(ID3D11DeviceContext* deviceContext, GameObject* object
 	{
 		return false;
 	}
-	memcpy(data.pData, m_instances.data(), copySize);
+	memcpy(data.pData, m_instances, copySize);
 	deviceContext->Unmap(m_instanceBuffer, 0);
 	return true;
 }
@@ -366,9 +372,12 @@ bool ModelClass::UpdateModels(ID3D11DeviceContext* deviceContext)
 	ZeroMemory(&data, sizeof(data)); 
 	
 	size_t copySize = sizeof(InstanceType) * m_instanceCount;
-	for (int i = 0; i < m_instances.size(); i++)
+	for (int i = 0; i < m_instanceCount; i++)
 	{
-		m_instances[i].position = m_instances[i].object->GetPos();
+		if (m_instances[i].object)
+		{
+			m_instances[i].position = m_instances[i].object->GetPos();
+		}
 	}
 
 	HRESULT result;
@@ -377,7 +386,7 @@ bool ModelClass::UpdateModels(ID3D11DeviceContext* deviceContext)
 	{
 		return false;
 	}
-	memcpy(data.pData, m_instances.data(), copySize);
+	memcpy(data.pData, m_instances, copySize);
 	deviceContext->Unmap(m_instanceBuffer, 0);
 	return true;
 }

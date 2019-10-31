@@ -7,6 +7,7 @@
 #include <fstream>
 #include <vector>
 #include "GameObject.h"
+#include <string>
 
 using namespace std;
 using namespace DirectX;
@@ -33,6 +34,8 @@ public:
 	struct InstanceType
 	{
 		XMFLOAT3 position;
+		XMFLOAT3 rotation;
+		XMFLOAT3 scale;
 		GameObject* object;
 	};
 
@@ -76,7 +79,9 @@ private:
 	int m_instanceCount;
 	int m_maxInstanceCount = 10000;
 	TextureClass* m_Texture;
-	std::vector<InstanceType> m_instances;
+	//std::vector<InstanceType> m_instances;
+	InstanceType m_instances[10000];
+	int lastInstance;
 
 	ModelType* m_model;
 

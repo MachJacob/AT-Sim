@@ -29,8 +29,21 @@ bool Game::Initialise(GraphicsClass* _graphics, InputClass* _input)
 
 	m_graphics->SetCamera(m_camera);
 
-	m_camera->SetPosition(-5.0f, 0.0f, 0.0f);
+	m_camera->SetPosition(-5.0f, 5.0f, 0.0f);
 	m_camera->SetRotation(0.0f, 90.0f, 0.0f);
+
+	char model[] = "../Sim/data/cube.txt";
+	char file[] = "../Sim/data/stone01.tga";
+
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			objects.push_back(std::make_unique<GameObject>());
+			objects.back()->SetPos(i * 2, 0, j * 2);
+			AddModel(model, file, objects.back().get());
+		}
+	}
 	return true;
 }
 
@@ -92,10 +105,15 @@ bool Game::Tick(float dt)
 	if (m_input->IsKeyDown('T'))
 	{
 		char model[] = "../Sim/data/cube.txt";
-		char file[] = "../Sim/data/stone01.tga";
-		objects.push_back(std::make_unique<GameObject>());
-		m_graphics->AddModel(model, file, objects.back);
-		space += 5.0f;
+		char file[] = "../Sim/data/metal01.tga";
+		objects.push_back(std::make_unique<Entity>());
+		objects.back()->SetPos(0, 5, space);
+		AddModel(model, file, objects.back().get());
+		space += 3.0f;
+	}
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Tick(dt);
 	}
 	return true;
 }
@@ -108,6 +126,6 @@ bool Game::Render()
 
 bool Game::AddModel(char* modelFilename, char* textureFilename, GameObject* object)
 {
-
+	m_graphics->AddModel(modelFilename, textureFilename, object);
 	return false;
 }

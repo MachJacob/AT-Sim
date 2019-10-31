@@ -21,8 +21,8 @@ class GraphicsClass
 private:
 	struct ModelType
 	{
-		char* modelFilename;
-		char* textureFileName;
+		string* modelFilename;
+		string* textureFileName;
 		ModelClass* model;
 	};
 public:

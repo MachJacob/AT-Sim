@@ -44,6 +44,7 @@ bool Game::Initialise(GraphicsClass* _graphics, InputClass* _input)
 			AddModel(model, file, objects.back().get());
 		}
 	}
+
 	return true;
 }
 
@@ -57,30 +58,50 @@ bool Game::Tick(float dt)
 	//run game loop
 	//if user presses escape, exit the application
 
-	if (m_input->IsKeyDown('D')) //d
+	CameraControl(dt);
+
+	if (m_input->IsKeyDown('T'))
+	{
+		char model[] = "../Sim/data/cube.txt";
+		char file[] = "../Sim/data/slime01.tga";
+		objects.push_back(std::make_unique<Entity>());
+		objects.back()->SetPos(0, 5, space);
+		AddModel(model, file, objects.back().get());
+		space += 3.0f;
+
+
+	}
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Tick(dt);
+	}
+	return true;
+}
+
+void Game::CameraControl(float dt)
+{
+	if (m_input->IsKeyDown('D'))
 	{
 		m_camera->SetRightSpeed(10 * dt);
 	}
-
-	if (m_input->IsKeyDown('A')) //a
+	if (m_input->IsKeyDown('A'))
 	{
 		m_camera->SetRightSpeed(-10 * dt);
 	}
-	if (m_input->IsKeyDown('W')) //w
+	if (m_input->IsKeyDown('W'))
 	{
 		m_camera->SetForwardSpeed(10 * dt);
 	}
-
-	if (m_input->IsKeyDown('S')) //s
+	if (m_input->IsKeyDown('S'))
 	{
 		m_camera->SetForwardSpeed(-10 * dt);
 	}
-	if (m_input->IsKeyDown('E')) //e
+	if (m_input->IsKeyDown('E'))
 	{
 		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y + 10 * dt, m_camera->GetPosition().z);
 		//m_camera->SetUpSpeed(10 * dt);
 	}
-	if (m_input->IsKeyDown('Q')) //q
+	if (m_input->IsKeyDown('Q'))
 	{
 		m_camera->SetPosition(m_camera->GetPosition().x, m_camera->GetPosition().y - 10 * dt, m_camera->GetPosition().z);
 		//m_camera->SetUpSpeed(10 * dt);
@@ -88,7 +109,6 @@ bool Game::Tick(float dt)
 	if (m_input->IsKeyDown(VK_LEFT))
 	{
 		m_camera->SetRotation(m_camera->GetRotation().x, m_camera->GetRotation().y - 60 * dt, m_camera->GetRotation().z);
-		m_camera->SetUpSpeed(10 * dt);
 	}
 	if (m_input->IsKeyDown(VK_RIGHT))
 	{
@@ -102,20 +122,6 @@ bool Game::Tick(float dt)
 	{
 		m_camera->SetRotation(m_camera->GetRotation().x + 60 * dt, m_camera->GetRotation().y, m_camera->GetRotation().z);
 	}
-	if (m_input->IsKeyDown('T'))
-	{
-		char model[] = "../Sim/data/cube.txt";
-		char file[] = "../Sim/data/metal01.tga";
-		objects.push_back(std::make_unique<Entity>());
-		objects.back()->SetPos(0, 5, space);
-		AddModel(model, file, objects.back().get());
-		space += 3.0f;
-	}
-	for (int i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Tick(dt);
-	}
-	return true;
 }
 
 bool Game::Render()

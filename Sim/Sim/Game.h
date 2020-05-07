@@ -15,6 +15,7 @@ public:
 	void Shutdown();
 
 	bool Tick(float);
+	void CameraControl(float dt);
 	bool Render();
 	bool AddModel(char*, char*, GameObject*);
 
@@ -24,6 +25,9 @@ private:
 	CameraClass* m_camera;
 
 	float space = 0.0f;
+
+	int gems = 5;
+	std::unique_ptr<GameObject> gem[5] = { nullptr };
 
 	std::vector<std::unique_ptr<GameObject>> objects;
 };
